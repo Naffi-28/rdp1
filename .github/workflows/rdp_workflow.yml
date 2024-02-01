@@ -1,0 +1,34 @@
+name: Windows RDP Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Remote Desktop
+      run: |
+        # Install Chocolatey for package management
+        Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        
+        # Install XRDP for Windows
+        choco install xrdp -y
+
+        # Start XRDP service
+        Start-Service xrdp
+
+    - name: Display RDP Connection Information
+      run: |
+        # Print the IP address or hostname of the runner for RDP connection
+        $env:COMPUTERNAME
+
+    - name: Finish
+      run: echo "Windows RDP setup complete."
+      
